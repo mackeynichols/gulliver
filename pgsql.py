@@ -34,7 +34,7 @@ class PGSQLClient:
             user="postgres",
             password=self.password
         )
-
+        logging.info("PGSQL Connected successfully")
         return self.conn.cursor()
 
     def remove_numeric(self, input):
@@ -57,6 +57,7 @@ class PGSQLClient:
             query_string = query_string[:-2] + ")"
 
             self.run_query(query_string)
+            logging.info("CREATE TABLE query run for " + self.remove_numeric(input['package']).replace("-", ""))
 
     
     def trunc_and_load_table(self, input):
@@ -64,6 +65,7 @@ class PGSQLClient:
             table_name = self.remove_numeric(input['package']).replace("-", "")
             truncate_query_string = "TRUNCATE TABLE " + table_name
             self.run_query( truncate_query_string )
+            logging.info("TRUNCATE finished on " + input['package'].replace("-", ""))
 
             insert_query_string_base = "INSERT INTO " + table_name + " (" + ", ".join(field["id"].replace("?", "qq").replace("-", "").replace(" ", "").replace("#", "num").replace(".", "_") for field in input["fields"]) + ") "
             
